@@ -7,10 +7,11 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AppointmentManagementSystem.WebApp.Controllers
 {
-
+    [AllowAnonymous]
     public class AccountController : BaseController
     {
         private readonly IIdentityService _identityService;
