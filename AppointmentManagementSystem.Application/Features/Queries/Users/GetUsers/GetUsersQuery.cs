@@ -10,6 +10,6 @@ namespace AppointmentManagementSystem.Application.Features.Queries.Users.GetUser
 {
     public class GetUsersQuery : IRequest<List<UserDto>>
     {
-        public bool IncludeInactive { get; set; } = false;
+     
     }
 }

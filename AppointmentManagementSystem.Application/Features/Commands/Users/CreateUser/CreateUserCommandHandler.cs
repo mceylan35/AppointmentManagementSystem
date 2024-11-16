@@ -1,4 +1,5 @@
 ﻿using AppointmentManagementSystem.Application.Common.Interfaces;
+using AppointmentManagementSystem.Domain.Common;
 using AppointmentManagementSystem.Domain.Entities;
 using BCrypt.Net;
 using MediatR;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace AppointmentManagementSystem.Application.Features.Commands.Users.CreateUser
 {
-    public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Guid>
+    public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, ResultDto<bool>>
     {
         private readonly IApplicationDbContext _context;
 
@@ -19,7 +20,7 @@ namespace AppointmentManagementSystem.Application.Features.Commands.Users.Create
             _context = context;
         }
 
-        public async Task<Guid> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+        public async Task<ResultDto<bool>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
             var entity = new User
             {
@@ -33,7 +34,7 @@ namespace AppointmentManagementSystem.Application.Features.Commands.Users.Create
             _context.Users.Add(entity);
             await _context.SaveChangesAsync(cancellationToken);
 
-            return entity.Id;
+            return ResultDto<bool>.Success(true, "Kullanıcı başarıyla eklendi.");
         }
     }
 }

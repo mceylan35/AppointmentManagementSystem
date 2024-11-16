@@ -1,4 +1,5 @@
-﻿using AppointmentManagementSystem.Domain.Enums;
+﻿using AppointmentManagementSystem.Domain.Common;
+using AppointmentManagementSystem.Domain.Enums;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AppointmentManagementSystem.Application.Features.Commands.Users.CreateUser
 {
-    public class CreateUserCommand : IRequest<Guid>
+    public class CreateUserCommand : IRequest<ResultDto<bool>>
     {
         public string Username { get; set; }
         public string Email { get; set; }

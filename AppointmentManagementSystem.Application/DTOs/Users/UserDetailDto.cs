@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace AppointmentManagementSystem.Application.DTOs.Users
 {
-    public class UserDto
+    public class UserDetailDto
     {
         public Guid Id { get; set; }
-        public string? Username { get; set; }
-        public string? Email { get; set; } 
+        public string Username { get; set; }
+        public string Email { get; set; }
         public bool IsActive { get; set; }
-        public DateTime CreatedAt { get; set; } 
+        public List<Guid> RoleIds { get; set; }
+        public List<string> RoleNames { get; set; }
     }
 }
- 

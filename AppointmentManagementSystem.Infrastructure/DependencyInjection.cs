@@ -33,6 +33,8 @@ namespace AppointmentManagementSystem.Infrastructure
              
             services.AddScoped<IIdentityService, IdentityService>(); 
             services.AddScoped<ICurrentUser, CurrentUserService>();
+            services.AddScoped<IServiceService, ServiceService>();
+            services.AddScoped<IRoleService, RoleService>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                               .AddCookie(options =>

@@ -25,14 +25,13 @@ namespace AppointmentManagementSystem.Application.Features.Queries.Users.GetUser
         public async Task<List<UserDto>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
         {
             var query = _context.Users.AsQueryable();
-
-            if (!request.IncludeInactive)
-            {
-                query = query.Where(u => u.IsActive);
-            }
+             
+            query = query.Where(i => i.IsActive);
+            query= query.Where(i => !i.IsDeleted);
 
             var users = await query
                 .OrderBy(u => u.Username)
+                .AsNoTracking()
                 .ToListAsync(cancellationToken);
 
             return _mapper.Map<List<UserDto>>(users);
