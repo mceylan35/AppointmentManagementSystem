@@ -1,6 +1,6 @@
 $(document).ready(function () {
     loadAppointments();
-
+    loadServices();
     // Yeni randevu oluþturma
     $('#createAppointmentForm').on('submit', function (e) {
         e.preventDefault();
@@ -27,10 +27,161 @@ $(document).ready(function () {
         });
     });
 
+    $('#appointment-button').on('show.bs.modal', function () {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        $('#appointmentDate').attr('min', tomorrow.toISOString().split('T')[0]);
+    });
+
+    const appointmentModal = new bootstrap.Modal(document.getElementById('createAppointmentModal'));
+    const editAppointmentModal = new bootstrap.Modal(document.getElementById('editAppointmentModal'));
+
+    $('#saveAppointment').on('click', function () {
+        const form = $('#createAppointmentForm');
+
+        if (!form[0].checkValidity()) {
+            form[0].reportValidity();
+            return;
+        }
+
+        const data = {
+            serviceId: $('#serviceId').val(),
+            appointmentDate: $('#appointmentDate').val(),
+            notes: $('#notes').val()
+        };
+
+        $.ajax({
+            url: '/Appointment/Create',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (response) {
+                if (response.success) {
+                    appointmentModal.hide(); // Bootstrap 5 modal kapatma
+                    form[0].reset();
+                    loadAppointments();
+                    toastr.success('Randevu baþarýyla oluþturuldu.');
+                } else {
+                    toastr.error(response.message || 'Randevu oluþturulurken bir hata oluþtu.');
+                }
+            },
+            error: function (xhr) {
+                toastr.error('Randevu oluþturulurken bir hata oluþtu.');
+            }
+        });
+    });
+
+    document.getElementById('createAppointmentModal').addEventListener('show.bs.modal', function () {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        $('#appointmentDate').attr('min', tomorrow.toISOString().split('T')[0]);
+    });
+
+
+    $(document).on('click', '.edit-appointment', function () {
+        const appointmentId = $(this).data('id');
+
+        // Randevu bilgilerini getir
+        $.ajax({
+            url: `/Appointment/${appointmentId}`,
+            type: 'GET',
+            success: function (appointment) {
+                // Form alanlarýný doldur
+                $('#editAppointmentId').val(appointment.id);
+                $('#editServiceId').val(appointment.serviceId);
+                $('#editAppointmentDate').val(appointment.appointmentDate.slice(0, 16)); // datetime-local için format
+                $('#editNotes').val(appointment.notes);
+
+                // Modalý aç
+                editAppointmentModal.show();
+            },
+            error: function () {
+                toastr.error('Randevu bilgileri alýnýrken bir hata oluþtu.');
+            }
+        });
+    });
+
+    // Güncelle butonuna týklandýðýnda
+    $('#updateAppointment').on('click', function () {
+        const form = $('#editAppointmentForm');
+
+        if (!form[0].checkValidity()) {
+            form[0].reportValidity();
+            return;
+        }
+
+        const data = {
+            id: $('#editAppointmentId').val(),
+            serviceId: $('#editServiceId').val(),
+            appointmentDate: $('#editAppointmentDate').val(),
+            notes: $('#editNotes').val()
+        };
+        const id = $('#editAppointmentId').val();
+        $.ajax({
+            url: `/appointment/${id}`,
+            type: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (response) {
+                if (response.success) {
+                    editAppointmentModal.hide();
+                    form[0].reset();
+                    loadAppointments();
+                    toastr.success('Randevu baþarýyla güncellendi.');
+                } else {
+                    toastr.error(response.message || 'Randevu güncellenirken bir hata oluþtu.');
+                }
+            },
+            error: function (xhr) {
+                toastr.error('Randevu güncellenirken bir hata oluþtu.');
+            }
+        });
+    });
+
+    // Edit modal açýldýðýnda servisleri yükle
+    document.getElementById('editAppointmentModal').addEventListener('show.bs.modal', function () {
+        // Servisleri yükle (eðer zaten yüklenmemiþse)
+        if ($('#editServiceId option').length <= 1) {
+            $.ajax({
+                url: '/Services',
+                type: 'GET',
+                success: function (services) {
+                    const select = $('#editServiceId');
+                    select.empty().append('<option value="">Hizmet Seçiniz</option>');
+
+                    services.forEach(function (service) {
+                        select.append(`<option value="${service.id}" 
+                        data-duration="${service.duration}">
+                        ${service.name} (${service.duration} dk)
+                    </option>`);
+                    });
+                },
+                error: function () {
+                    toastr.error('Hizmetler yüklenirken bir hata oluþtu.');
+                }
+            });
+        }
+
+        // Minimum tarih kontrolü
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        $('#editAppointmentDate').attr('min', tomorrow.toISOString().split('T')[0]);
+    });
+
+
+
+
+
+
+
+
+
+
+
     // Randevularý yükleme
     function loadAppointments() {
         $.ajax({
-            url: '/Appointments',
+            url: '/Appointment/appointments',
             type: 'GET',
             success: function (appointments) {
                 const tbody = $('#appointmentsTable tbody');
@@ -55,6 +206,27 @@ $(document).ready(function () {
         });
     }
 
+
+    function loadServices() {
+        $.ajax({
+            url: '/Services',
+            type: 'GET',
+            success: function (services) {
+                const select = $('#serviceId');
+                select.empty().append('<option value="">Hizmet Seçiniz</option>');
+
+                services.forEach(function (service) {
+                    select.append(`<option value="${service.id}" 
+                        data-duration="${service.duration}">
+                        ${service.name} (${service.duration} dk)
+                    </option>`);
+                });
+            },
+            error: function () {
+                toastr.error('Hizmetler yüklenirken bir hata oluþtu.');
+            }
+        });
+    }
     // Randevu silme
     $(document).on('click', '.delete-appointment', function () {
         const id = $(this).data('id');

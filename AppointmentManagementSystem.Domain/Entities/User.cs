@@ -16,7 +16,7 @@ namespace AppointmentManagementSystem.Domain.Entities
         public bool IsActive { get; set; }
         public string? PhoneNumber { get; set; }
 
-        public virtual ICollection<UserRole> UserRoles { get; private set; } = new List<UserRole>();
-        public virtual ICollection<Appointment> Appointments { get; private set; } = new List<Appointment>();
+        public virtual ICollection<UserRole> UserRoles { get;  set; } 
+        public virtual ICollection<Appointment> Appointments { get;  set; } 
     }
 }

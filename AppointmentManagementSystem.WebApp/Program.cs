@@ -1,6 +1,7 @@
 using AppointmentManagementSystem.Application;
 using AppointmentManagementSystem.Infrastructure;
 using AppointmentManagementSystem.Infrastructure.Context;
+using AppointmentManagementSystem.Infrastructure.Middleware;
 using static System.Net.Mime.MediaTypeNames;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +11,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder =>
@@ -60,7 +62,7 @@ app.UseCors("AllowAll");
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseErrorHandling();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

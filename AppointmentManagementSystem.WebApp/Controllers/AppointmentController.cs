@@ -19,7 +19,7 @@ namespace AppointmentManagementSystem.WebApp.Controllers
             return View();
         }
 
-        [HttpGet("Appointments")]
+        [HttpGet("appointments")]
         public async Task<ActionResult<List<AppointmentDto>>> GetAppointments()
         {
             return Ok(await Mediator.Send(new GetAppointmentsQuery()));
@@ -32,14 +32,14 @@ namespace AppointmentManagementSystem.WebApp.Controllers
             return Ok(await Mediator.Send(new GetAppointmentDetailQuery { Id = id }));
         }
 
-        [HttpPost]
-        public async Task<ActionResult<int>> Create(CreateAppointmentCommand command)
+        [HttpPost("create")]
+        public async Task<ActionResult<int>> Create([FromBody]CreateAppointmentCommand command)
         {
             return Ok(await Mediator.Send(command));
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> Update(Guid id, UpdateAppointmentCommand command)
+        public async Task<ActionResult> Update(Guid id, [FromBody] UpdateAppointmentCommand command)
         {
             if (id != command.Id)
                 return BadRequest();

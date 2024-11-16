@@ -8,7 +8,7 @@ namespace AppointmentManagementSystem.Application.DTOs
 {
     public class AppointmentDto
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public DateTime AppointmentDate { get; set; }
         public string Status { get; set; }
         public string ServiceName { get; set; }

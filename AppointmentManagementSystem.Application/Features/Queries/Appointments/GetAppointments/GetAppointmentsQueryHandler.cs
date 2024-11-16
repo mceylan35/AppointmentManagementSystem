@@ -31,7 +31,7 @@ namespace AppointmentManagementSystem.Application.Features.Queries.Appointments.
                 .Include(a => a.Service)
                 .Include(a => a.User);
 
-            if (!request.IncludeAll || !_currentUser.IsAdmin)
+            if (!_currentUser.IsAdmin)
             {
                 query = query.Where(a => a.UserId == _currentUser.Id.Value);
             }

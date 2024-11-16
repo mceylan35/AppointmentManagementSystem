@@ -1,13 +1,11 @@
 ﻿@{
     ViewData["Title"] = "Randevularım";
 }
-
 <div class="container">
     <h2>Randevularım</h2>
-    <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#createAppointmentModal">
+    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#createAppointmentModal">
         Yeni Randevu
     </button>
-
     <table id="appointmentsTable" class="table">
         <thead>
             <tr>
@@ -22,6 +20,10 @@
     </table>
 </div>
 
+@await Html.PartialAsync("_CreateAppointmentModal")
+@await Html.PartialAsync("_EditAppointmentModal")
+
 @section Scripts {
     <script src="~/js/appointment.js"></script>
+     
 }
