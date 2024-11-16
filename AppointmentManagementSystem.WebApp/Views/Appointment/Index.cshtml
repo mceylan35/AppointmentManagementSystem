@@ -1,0 +1,27 @@
+﻿@{
+    ViewData["Title"] = "Randevularım";
+}
+
+<div class="container">
+    <h2>Randevularım</h2>
+    <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#createAppointmentModal">
+        Yeni Randevu
+    </button>
+
+    <table id="appointmentsTable" class="table">
+        <thead>
+            <tr>
+                <th>Tarih</th>
+                <th>Hizmet</th>
+                <th>Durum</th>
+                <th>İşlemler</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script src="~/js/appointment.js"></script>
+}

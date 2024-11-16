@@ -1,0 +1,56 @@
+﻿using AppointmentManagementSystem.Application.Common.Exceptions;
+using AppointmentManagementSystem.Application.Common.Interfaces;
+using AppointmentManagementSystem.Domain.Entities;
+using AppointmentManagementSystem.Domain.Enums;
+using MediatR;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace AppointmentManagementSystem.Application.Features.Commands.Appointments.DeleteAppointment
+{
+    public class DeleteAppointmentCommandHandler : IRequestHandler<DeleteAppointmentCommand, bool>
+    {
+        private readonly IApplicationDbContext _context;
+        private readonly ICurrentUser _currentUser;
+
+        public DeleteAppointmentCommandHandler(IApplicationDbContext context, ICurrentUser currentUser)
+        {
+            _context = context;
+            _currentUser = currentUser;
+        }
+
+        public async Task<bool> Handle(DeleteAppointmentCommand request, CancellationToken cancellationToken)
+        {
+            var entity = await _context.Appointments
+                .FindAsync(new object[] { request.Id }, cancellationToken);
+
+            if (entity == null)
+            {
+                throw new NotFoundException(nameof(Appointment), request.Id);
+            }
+
+            // Admin değilse sadece kendi randevularını silebilir
+            if (!_currentUser.IsAdmin && entity.UserId != _currentUser.Id)
+            {
+                throw new UnauthorizedAccessException("Bu randevuyu silme yetkiniz yok.");
+            }
+
+            if (_currentUser.IsAdmin)
+            {
+                _context.Appointments.Remove(entity);
+            }
+            else
+            {
+                // Normal kullanıcılar için soft delete
+                entity.Status = AppointmentStatus.Cancelled;
+            }
+
+            var result=   await _context.SaveChangesAsync(cancellationToken);
+
+            return result>0;
+        }
+    }
+}
