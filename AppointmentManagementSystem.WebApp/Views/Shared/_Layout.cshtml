@@ -27,7 +27,7 @@
                             @if (User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-controller="Admin" asp-action="Index">Yönetim</a>
+                                    <a class="nav-link text-dark" asp-controller="Users" asp-action="Index">Kullanıcı Yönetimi</a>
                                 </li>
                             }
                         }
@@ -68,8 +68,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/js/appointment.js"></script>
-    <script src="~/js/account.js"></script>
+ 
     <script src="~/lib/toastr.js/toastr.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
