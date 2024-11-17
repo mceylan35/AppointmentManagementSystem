@@ -47,6 +47,23 @@ namespace AppointmentManagementSystem.Infrastructure.Identity.Services.Concrete
                     };
                 }
 
+                if (user.IsDeleted)
+                {
+                    return new AuthenticationResult
+                    {
+                        Success = false,
+                        Message = "Hesabınız silinmiştir."
+                    };
+                }
+                if (!user.IsActive)
+                {
+                    return new AuthenticationResult
+                    {
+                        Success = false,
+                        Message = "Hesabınız aktif değildir."
+                    };
+                }
+
                 // Kullanıcının rollerini al
                 var roles = user.UserRoles.Select(ur => ur.Role.Name).ToList();
 

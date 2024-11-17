@@ -68,7 +68,7 @@ namespace AppointmentManagementSystem.Infrastructure.Middleware
         }
     }
 
-    // Extension method for easy registration
+     
     public static class ErrorHandlingMiddlewareExtensions
     {
         public static IApplicationBuilder UseErrorHandling(this IApplicationBuilder builder)
