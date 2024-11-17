@@ -1,6 +1,8 @@
 ﻿using AppointmentManagementSystem.Application.Common.Exceptions;
 using AppointmentManagementSystem.Application.Common.Interfaces;
 using AppointmentManagementSystem.Application.DTOs;
+using AppointmentManagementSystem.Application.DTOs.Users;
+using AppointmentManagementSystem.Domain.Common;
 using AppointmentManagementSystem.Domain.Entities;
 using AutoMapper;
 using MediatR;
@@ -13,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace AppointmentManagementSystem.Application.Features.Queries.Appointments.GetAppointmentDetail
 {
-    public class GetAppointmentDetailQueryHandler : IRequestHandler<GetAppointmentDetailQuery, AppointmentDto>
+    public class GetAppointmentDetailQueryHandler : IRequestHandler<GetAppointmentDetailQuery, ResultDto<AppointmentDto>>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -29,7 +31,7 @@ namespace AppointmentManagementSystem.Application.Features.Queries.Appointments.
             _currentUser = currentUser;
         }
 
-        public async Task<AppointmentDto> Handle(GetAppointmentDetailQuery request, CancellationToken cancellationToken)
+        public async Task<ResultDto<AppointmentDto>> Handle(GetAppointmentDetailQuery request, CancellationToken cancellationToken)
         {
             var appointment = await _context.Appointments
                 .Include(a => a.Service)
@@ -47,7 +49,9 @@ namespace AppointmentManagementSystem.Application.Features.Queries.Appointments.
                 throw new UnauthorizedAccessException("Bu randevuyu görüntüleme yetkiniz yok.");
             }
 
-            return _mapper.Map<AppointmentDto>(appointment);
+            var response = _mapper.Map<AppointmentDto>(appointment);
+            return ResultDto<AppointmentDto>.Success(response, "İşlem Başarılı");
+
         }
     }
 }

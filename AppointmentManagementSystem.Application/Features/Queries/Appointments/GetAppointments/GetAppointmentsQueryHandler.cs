@@ -1,5 +1,7 @@
 ﻿using AppointmentManagementSystem.Application.Common.Interfaces;
 using AppointmentManagementSystem.Application.DTOs;
+using AppointmentManagementSystem.Application.DTOs.Users;
+using AppointmentManagementSystem.Domain.Common;
 using AppointmentManagementSystem.Domain.Entities;
 using AutoMapper;
 using MediatR;
@@ -12,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace AppointmentManagementSystem.Application.Features.Queries.Appointments.GetAppointments
 {
-    public class GetAppointmentsQueryHandler : IRequestHandler<GetAppointmentsQuery, List<AppointmentDto>>
+    public class GetAppointmentsQueryHandler : IRequestHandler<GetAppointmentsQuery, ResultDto<List<AppointmentDto>>>
     {
         private readonly IApplicationDbContext _context;
         private readonly ICurrentUser _currentUser;
@@ -25,7 +27,7 @@ namespace AppointmentManagementSystem.Application.Features.Queries.Appointments.
             _mapper = mapper;
         }
 
-        public async Task<List<AppointmentDto>> Handle(GetAppointmentsQuery request, CancellationToken cancellationToken)
+        public async Task<ResultDto<List<AppointmentDto>>> Handle(GetAppointmentsQuery request, CancellationToken cancellationToken)
         {
             IQueryable<Appointment> query = _context.Appointments
                 .Include(a => a.Service)
@@ -39,7 +41,8 @@ namespace AppointmentManagementSystem.Application.Features.Queries.Appointments.
             var appointments = await query.OrderByDescending(a => a.AppointmentDate)
                 .ToListAsync(cancellationToken);
 
-            return _mapper.Map<List<AppointmentDto>>(appointments);
+            var response =  _mapper.Map<List<AppointmentDto>>(appointments);
+            return ResultDto<List<AppointmentDto>>.Success(response, "İşlem Başarılı");
         }
     }
 }

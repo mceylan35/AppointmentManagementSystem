@@ -1,4 +1,5 @@
 ﻿using AppointmentManagementSystem.Application.DTOs;
+using AppointmentManagementSystem.Domain.Common;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -8,8 +9,8 @@ using System.Threading.Tasks;
 
 namespace AppointmentManagementSystem.Application.Features.Queries.Appointments.GetAppointments
 {
-    public class GetAppointmentsQuery : IRequest<List<AppointmentDto>>
+    public class GetAppointmentsQuery : IRequest<ResultDto<List<AppointmentDto>>>
     {
-        public bool IncludeAll { get; set; }
+       
     }
 }

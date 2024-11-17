@@ -1,5 +1,6 @@
 ﻿using AppointmentManagementSystem.Application.Common.Interfaces;
 using AppointmentManagementSystem.Application.DTOs.Users;
+using AppointmentManagementSystem.Domain.Common;
 using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace AppointmentManagementSystem.Application.Features.Queries.Users.GetUsers
 {
-    public class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, List<UserDto>>
+    public class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, ResultDto<List<UserDto>>>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -22,7 +23,7 @@ namespace AppointmentManagementSystem.Application.Features.Queries.Users.GetUser
             _mapper = mapper;
         }
 
-        public async Task<List<UserDto>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
+        public async Task<ResultDto<List<UserDto>>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
         {
             var query = _context.Users.AsQueryable();
              
@@ -34,7 +35,8 @@ namespace AppointmentManagementSystem.Application.Features.Queries.Users.GetUser
                 .AsNoTracking()
                 .ToListAsync(cancellationToken);
 
-            return _mapper.Map<List<UserDto>>(users);
+            var response= _mapper.Map<List<UserDto>>(users);
+            return ResultDto<List<UserDto>>.Success(response, "İşlem Başarılı");
         }
     }
 }

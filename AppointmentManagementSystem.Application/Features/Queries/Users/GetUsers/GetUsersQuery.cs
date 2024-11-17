@@ -1,4 +1,5 @@
 ﻿using AppointmentManagementSystem.Application.DTOs.Users;
+using AppointmentManagementSystem.Domain.Common;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AppointmentManagementSystem.Application.Features.Queries.Users.GetUsers
 {
-    public class GetUsersQuery : IRequest<List<UserDto>>
+    public class GetUsersQuery : IRequest<ResultDto<List<UserDto>>>
     {
      
     }
