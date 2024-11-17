@@ -1,5 +1,6 @@
 ﻿using AppointmentManagementSystem.Application.Common.Exceptions;
 using AppointmentManagementSystem.Application.Common.Interfaces;
+using AppointmentManagementSystem.Domain.Common;
 using AppointmentManagementSystem.Domain.Entities;
 using AppointmentManagementSystem.Domain.Enums;
 using MediatR;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace AppointmentManagementSystem.Application.Features.Commands.Appointments.DeleteAppointment
 {
-    public class DeleteAppointmentCommandHandler : IRequestHandler<DeleteAppointmentCommand, bool>
+    public class DeleteAppointmentCommandHandler : IRequestHandler<DeleteAppointmentCommand, ResultDto<bool>>
     {
         private readonly IApplicationDbContext _context;
         private readonly ICurrentUser _currentUser;
@@ -22,7 +23,7 @@ namespace AppointmentManagementSystem.Application.Features.Commands.Appointments
             _currentUser = currentUser;
         }
 
-        public async Task<bool> Handle(DeleteAppointmentCommand request, CancellationToken cancellationToken)
+        public async Task<ResultDto<bool>> Handle(DeleteAppointmentCommand request, CancellationToken cancellationToken)
         {
             var entity = await _context.Appointments
                 .FindAsync(new object[] { request.Id }, cancellationToken);
@@ -50,7 +51,7 @@ namespace AppointmentManagementSystem.Application.Features.Commands.Appointments
 
             var result=   await _context.SaveChangesAsync(cancellationToken);
 
-            return result>0;
+            return ResultDto<bool>.Success(true, "Radevu başarıyla silindi.");
         }
     }
 }

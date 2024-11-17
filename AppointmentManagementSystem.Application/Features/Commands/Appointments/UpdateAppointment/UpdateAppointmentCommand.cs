@@ -1,4 +1,5 @@
-﻿using AppointmentManagementSystem.Domain.Enums;
+﻿using AppointmentManagementSystem.Domain.Common;
+using AppointmentManagementSystem.Domain.Enums;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AppointmentManagementSystem.Application.Features.Commands.Appointments.UpdateAppointment
 {
-    public class UpdateAppointmentCommand : IRequest<bool>
+    public class UpdateAppointmentCommand : IRequest<ResultDto<bool>>
     {
         public Guid Id { get; set; }
         public DateTime AppointmentDate { get; set; }

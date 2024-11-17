@@ -1,4 +1,5 @@
 ﻿using AppointmentManagementSystem.Application.Common.Interfaces;
+using AppointmentManagementSystem.Domain.Common;
 using AppointmentManagementSystem.Domain.Entities;
 using AppointmentManagementSystem.Domain.Enums;
 using MediatR;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace AppointmentManagementSystem.Application.Features.Commands.Appointments.CreateAppointment
 {
-    public class CreateAppointmentCommandHandler : IRequestHandler<CreateAppointmentCommand, Guid>
+    public class CreateAppointmentCommandHandler : IRequestHandler<CreateAppointmentCommand, ResultDto<bool>>
     {
         private readonly IApplicationDbContext _context;
         private readonly ICurrentUser _currentUser;
@@ -21,7 +22,7 @@ namespace AppointmentManagementSystem.Application.Features.Commands.Appointments
             _currentUser = currentUser;
         }
 
-        public async Task<Guid> Handle(CreateAppointmentCommand request, CancellationToken cancellationToken)
+        public async Task<ResultDto<bool>> Handle(CreateAppointmentCommand request, CancellationToken cancellationToken)
         {
             var entity = new Appointment
             {
@@ -37,7 +38,8 @@ namespace AppointmentManagementSystem.Application.Features.Commands.Appointments
             _context.Appointments.Add(entity);
             await _context.SaveChangesAsync(cancellationToken);
 
-            return entity.Id;
+
+            return ResultDto<bool>.Success(true, "Radevu başarıyla eklendi.");
         }
     }
 }

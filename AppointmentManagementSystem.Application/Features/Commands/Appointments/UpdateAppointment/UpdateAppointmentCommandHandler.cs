@@ -1,5 +1,6 @@
 ﻿using AppointmentManagementSystem.Application.Common.Exceptions;
 using AppointmentManagementSystem.Application.Common.Interfaces;
+using AppointmentManagementSystem.Domain.Common;
 using AppointmentManagementSystem.Domain.Entities;
 using MediatR;
 using System;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace AppointmentManagementSystem.Application.Features.Commands.Appointments.UpdateAppointment
 {
-    public class UpdateAppointmentCommandHandler : IRequestHandler<UpdateAppointmentCommand, bool>
+    public class UpdateAppointmentCommandHandler : IRequestHandler<UpdateAppointmentCommand, ResultDto<bool>>
     {
         private readonly IApplicationDbContext _context;
         private readonly ICurrentUser _currentUser;
@@ -21,7 +22,7 @@ namespace AppointmentManagementSystem.Application.Features.Commands.Appointments
             _currentUser = currentUser;
         }
 
-        public async Task<bool> Handle(UpdateAppointmentCommand request, CancellationToken cancellationToken)
+        public async Task<ResultDto<bool>> Handle(UpdateAppointmentCommand request, CancellationToken cancellationToken)
         {
             var entity = await _context.Appointments
                 .FindAsync(new object[] { request.Id }, cancellationToken);
@@ -49,7 +50,7 @@ namespace AppointmentManagementSystem.Application.Features.Commands.Appointments
 
            var result= await _context.SaveChangesAsync(cancellationToken);
 
-            return result>0;
+            return ResultDto<bool>.Success(true, "Radevu başarıyla güncellendi.");
         }
     }
 }
