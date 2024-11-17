@@ -28,7 +28,7 @@
                             <td>${user.username}</td>
                            
                              <td>${user.email}</td>
-                            <td>${user.isActive ? 'Aktif' : 'Pasif'}</td>
+                            <td>${user.isActive ? 'Aktif' : 'Pasif'}</td>                          
                             <td>
                                 <button class="btn btn-sm btn-primary edit-user" data-id="${user.id}">
                                     Düzenle

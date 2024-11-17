@@ -16,10 +16,12 @@ namespace AppointmentManagementSystem.Application.Features.Commands.Users.Create
     public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, ResultDto<bool>>
     {
         private readonly IApplicationDbContext _context;
+        private readonly IRoleService _roleService;
 
-        public CreateUserCommandHandler(IApplicationDbContext context)
+        public CreateUserCommandHandler(IApplicationDbContext context, IRoleService roleService)
         {
             _context = context;
+            _roleService = roleService;
         }
 
         public async Task<ResultDto<bool>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
@@ -32,7 +34,7 @@ namespace AppointmentManagementSystem.Application.Features.Commands.Users.Create
 
             await _context.Users.AddAsync(user, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
-            await AssignUserRoleAsync(user, request.RoleId, cancellationToken);
+            await _roleService.AssignUserRoleAsync(user, request.RoleId, cancellationToken);
 
 
             return ResultDto<bool>.Success(true, "Kullanıcı başarıyla eklendi.");
@@ -62,17 +64,6 @@ namespace AppointmentManagementSystem.Application.Features.Commands.Users.Create
                 UserRoles = new List<UserRole>() 
             };
         }
-        private async Task AssignUserRoleAsync(User user, Guid roleId, CancellationToken cancellationToken)
-        {
-            var userRole = new UserRole
-            {
-                UserId = user.Id,
-                RoleId = roleId
-            };
-             
-            await _context.UserRoles.AddAsync(userRole, cancellationToken);
-
-            await _context.SaveChangesAsync(cancellationToken);
-        }
+       
     }
 }

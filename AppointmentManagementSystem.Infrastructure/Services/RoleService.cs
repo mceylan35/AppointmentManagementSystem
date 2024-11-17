@@ -1,5 +1,6 @@
 ﻿using AppointmentManagementSystem.Application.Common.Interfaces;
 using AppointmentManagementSystem.Application.DTOs.Roles;
+using AppointmentManagementSystem.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,20 @@ namespace AppointmentManagementSystem.Infrastructure.Services
         public RoleService(IApplicationDbContext context)
         {
             _context = context;
+        }
+
+         
+        public async Task AssignUserRoleAsync(User user, Guid roleId, CancellationToken cancellationToken)
+        {
+            var userRole = new UserRole
+            {
+                UserId = user.Id,
+                RoleId = roleId
+            };
+
+            await _context.UserRoles.AddAsync(userRole, cancellationToken);
+
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
         public async Task<List<RoleDto>> GetAllRolesAsync()

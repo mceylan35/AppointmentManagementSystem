@@ -20,11 +20,13 @@ namespace AppointmentManagementSystem.Application.Features.Commands.Users.Update
         private readonly IApplicationDbContext _context;
         private readonly ICurrentUser _currentUser;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public UpdateUserCommandHandler(IApplicationDbContext context, ICurrentUser currentUser, IHttpContextAccessor httpContextAccessor)
+        private readonly IRoleService _roleService;
+        public UpdateUserCommandHandler(IApplicationDbContext context, ICurrentUser currentUser, IHttpContextAccessor httpContextAccessor, IRoleService roleService)
         {
             _context = context;
             _currentUser = currentUser;
             _httpContextAccessor = httpContextAccessor;
+            _roleService = roleService;
         }
 
         public async Task<ResultDto<bool>> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
@@ -52,16 +54,11 @@ namespace AppointmentManagementSystem.Application.Features.Commands.Users.Update
 
                 // Rolleri güncelle
                 _context.UserRoles.RemoveRange(user.UserRoles);
-                user.UserRoles.Add(new UserRole
-                {
-                    UserId = user.Id,
-                    RoleId = request.RoleId
-                });
+           
 
-                 
                 await _context.SaveChangesAsync(cancellationToken);
 
-
+                await _roleService.AssignUserRoleAsync(user, request.RoleId, cancellationToken);
 
                 if (_currentUser.Id == user.Id)
                 {
