@@ -1,4 +1,5 @@
-﻿using AppointmentManagementSystem.Application.Common.Interfaces;
+﻿using AppointmentManagementSystem.Application.Common.Exceptions;
+using AppointmentManagementSystem.Application.Common.Interfaces;
 using AppointmentManagementSystem.Domain.Entities;
 using MediatR;
 using System;
@@ -25,10 +26,10 @@ namespace AppointmentManagementSystem.Application.Features.Commands.Users.Update
 
             if (user == null)
             {
-                // throw new NotFoundException(nameof(User), request.UserId);
+                 throw new NotFoundException(nameof(User), request.UserId);
             }
 
-           // user.Role = request.NewRole;
+            user.UserRoles.Add(new UserRole { RoleId = request.RoleId, UserId = user.Id });
            var result= await _context.SaveChangesAsync(cancellationToken);
 
             return result>0;

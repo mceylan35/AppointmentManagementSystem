@@ -11,6 +11,6 @@ namespace AppointmentManagementSystem.Application.Features.Commands.Users.Update
     public class UpdateUserRoleCommand : IRequest<bool>
     {
         public Guid UserId { get; set; }
-        public UserRole NewRole { get; set; }
+        public Guid RoleId { get; set; }
     }
 }

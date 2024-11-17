@@ -14,7 +14,7 @@ namespace AppointmentManagementSystem.Application.Features.Commands.Users.Update
             RuleFor(v => v.UserId)
                 .NotEmpty().WithMessage("Kullanıcı ID zorunludur.");
 
-            RuleFor(v => v.NewRole)
+            RuleFor(v => v.RoleId)
                 .IsInEnum().WithMessage("Geçerli bir rol seçiniz.");
         }
     }

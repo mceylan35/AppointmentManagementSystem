@@ -14,6 +14,6 @@ namespace AppointmentManagementSystem.Application.Features.Commands.Users.Create
         public string Username { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        public UserRole Role { get; set; } = UserRole.User;
+        public Guid RoleId { get; set; }
     }
 }
