@@ -60,7 +60,7 @@ $(document).ready(function () {
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (response) {
-                if (response.success) {
+                if (response.successed) {
                     appointmentModal.hide();  
                     form[0].reset();
                     loadAppointments();
@@ -240,7 +240,7 @@ $(document).ready(function () {
                     Düzenle
                 </button>
                 <button class="btn btn-sm btn-danger delete-appointment" data-id="${appointment.id}">
-                    Ýptal
+                    Sil
                 </button>`;
             } 
         }

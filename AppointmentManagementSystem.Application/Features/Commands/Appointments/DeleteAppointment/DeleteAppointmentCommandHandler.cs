@@ -33,21 +33,16 @@ namespace AppointmentManagementSystem.Application.Features.Commands.Appointments
                 throw new NotFoundException(nameof(Appointment), request.Id);
             }
 
-            // Admin değilse sadece kendi randevularını silebilir
+             //sadece kendi randevularını silebilir
             if (!_currentUser.IsAdmin && entity.UserId != _currentUser.Id)
             {
                 throw new UnauthorizedAccessException("Bu randevuyu silme yetkiniz yok.");
             }
 
-            if (_currentUser.IsAdmin)
-            {
-                _context.Appointments.Remove(entity);
-            }
-            else
-            {
-                // Normal kullanıcılar için soft delete
-                entity.Status = AppointmentStatus.Cancelled;
-            }
+            entity.IsDeleted = true;
+          
+            // _context.Appointments.Remove(entity);
+           
 
             var result=   await _context.SaveChangesAsync(cancellationToken);
 

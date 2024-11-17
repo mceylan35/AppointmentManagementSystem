@@ -37,6 +37,7 @@ namespace AppointmentManagementSystem.Application.Features.Queries.Appointments.
             {
                 query = query.Where(a => a.UserId == _currentUser.Id.Value);
             }
+            query = query.Where(i => i.IsDeleted==false);
 
             var appointments = await query.OrderByDescending(a => a.AppointmentDate)
                 .ToListAsync(cancellationToken);
