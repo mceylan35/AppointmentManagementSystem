@@ -46,10 +46,7 @@ namespace AppointmentManagementSystem.WebApp.Controllers
                     new ClaimsPrincipal(new ClaimsIdentity(result.Claims, CookieAuthenticationDefaults.AuthenticationScheme)),
                     authProperties);
 
-                if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
-                {
-                    //return Redirect(returnUrl);
-                }
+                
                  
             }
             return Ok(result);

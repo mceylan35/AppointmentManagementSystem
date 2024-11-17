@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AppointmentManagementSystem.WebApp.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "User,Admin")]
     public class ServicesController : BaseController
     {
         private readonly IServiceService _serviceService;

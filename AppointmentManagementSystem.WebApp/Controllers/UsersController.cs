@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace AppointmentManagementSystem.WebApp.Controllers
 {
-    [Authorize("Admin")]
+    [Authorize(Roles = "Admin")]
     public class UsersController : BaseController
     {
         public UsersController()

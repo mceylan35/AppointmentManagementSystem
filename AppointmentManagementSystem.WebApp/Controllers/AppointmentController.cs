@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AppointmentManagementSystem.WebApp.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "User,Admin")]
     public class AppointmentController : BaseController
     {
 
@@ -41,18 +41,15 @@ namespace AppointmentManagementSystem.WebApp.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult> Update(Guid id, [FromBody] UpdateAppointmentCommand command)
         {
-            if (id != command.Id)
-                return BadRequest();
-
-            await Mediator.Send(command);
-            return NoContent();
+            
+            return Ok(await Mediator.Send(command));
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(Guid id)
         {
-            await Mediator.Send(new DeleteAppointmentCommand { Id = id });
-            return NoContent();
+           return Ok(await Mediator.Send(new DeleteAppointmentCommand { Id = id }));
+            
         }
     }
 }
