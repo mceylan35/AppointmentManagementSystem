@@ -90,7 +90,7 @@
             username: $('#username').val(),
             email: $('#email').val(),
             password: $('#password').val(),
-            roleIds: $('#roles').val()
+            roleId: $('#roles').val()
         };
 
         $.ajax({
@@ -147,7 +147,7 @@
             id: $('#editUserId').val(),
             username: $('#editUsername').val(),
             email: $('#editEmail').val(),
-            roleIds: $('#editRoles').val(),
+            roleId: $('#editRoles').val(),
             isActive: $('#editIsActive').is(':checked')
         };
 

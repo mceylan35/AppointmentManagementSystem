@@ -13,7 +13,7 @@ namespace AppointmentManagementSystem.Application.Features.Commands.Users.Update
         public Guid Id { get; set; }
         public string Username { get; set; }
         public string Email { get; set; }
-        public List<Guid> RoleIds { get; set; }
+        public Guid RoleId { get; set; }
         public bool IsActive { get; set; }
     }
 }

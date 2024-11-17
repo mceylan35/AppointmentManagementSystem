@@ -52,11 +52,11 @@ namespace AppointmentManagementSystem.Application.Features.Commands.Users.Update
 
                 // Rolleri güncelle
                 _context.UserRoles.RemoveRange(user.UserRoles);
-                user.UserRoles = request.RoleIds.Select(roleId => new UserRole
+                user.UserRoles.Add(new UserRole
                 {
                     UserId = user.Id,
-                    RoleId = roleId
-                }).ToList();
+                    RoleId = request.RoleId
+                });
 
                  
                 await _context.SaveChangesAsync(cancellationToken);

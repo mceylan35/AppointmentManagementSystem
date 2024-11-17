@@ -16,35 +16,63 @@ namespace AppointmentManagementSystem.Application.Features.Commands.Users.Create
     public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, ResultDto<bool>>
     {
         private readonly IApplicationDbContext _context;
-        IMediator _mediator;
 
-        public CreateUserCommandHandler(IApplicationDbContext context, IMediator mediator)
+        public CreateUserCommandHandler(IApplicationDbContext context)
         {
             _context = context;
-            _mediator = mediator;
         }
 
         public async Task<ResultDto<bool>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
-            if (await _context.Users.AnyAsync(u => u.Username == request.Username))
+            var validationResult = await ValidateUserAsync(request, cancellationToken);
+            if (!validationResult.Successed)
+                return validationResult;
+
+            var user = CreateUser(request);
+
+            await _context.Users.AddAsync(user, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
+            await AssignUserRoleAsync(user, request.RoleId, cancellationToken);
+
+
+            return ResultDto<bool>.Success(true, "Kullanıcı başarıyla eklendi.");
+        }
+        private async Task<ResultDto<bool>> ValidateUserAsync(CreateUserCommand request, CancellationToken cancellationToken)
+        {
+            if (await _context.Users.AnyAsync(u => u.Username == request.Username, cancellationToken))
                 return ResultDto<bool>.Fail("Bu kullanıcı adı zaten kullanılıyor.");
 
-            if (await _context.Users.AnyAsync(u => u.Email == request.Email))
+            if (await _context.Users.AnyAsync(u => u.Email == request.Email, cancellationToken))
                 return ResultDto<bool>.Fail("Bu email adresi zaten kullanılıyor.");
 
-            var entity = new User
+            if (!await _context.Roles.AnyAsync(r => r.Id == request.RoleId, cancellationToken))
+                return ResultDto<bool>.Fail("Geçersiz rol ID'si.");
+
+            return ResultDto<bool>.Success(true);
+        }
+        private static User CreateUser(CreateUserCommand request)
+        {
+            return new User
             {
                 Username = request.Username,
                 Email = request.Email,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
-              //  Role = request.Role,
-                IsActive = true
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow,
+                UserRoles = new List<UserRole>() 
             };
+        }
+        private async Task AssignUserRoleAsync(User user, Guid roleId, CancellationToken cancellationToken)
+        {
+            var userRole = new UserRole
+            {
+                UserId = user.Id,
+                RoleId = roleId
+            };
+             
+            await _context.UserRoles.AddAsync(userRole, cancellationToken);
 
-            _context.Users.Add(entity);
             await _context.SaveChangesAsync(cancellationToken);
-           await _mediator.Send(new UpdateUserRoleCommand { UserId=entity.Id, RoleId= request.RoleId});
-            return ResultDto<bool>.Success(true, "Kullanıcı başarıyla eklendi.");
         }
     }
 }
