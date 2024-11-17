@@ -52,17 +52,26 @@ namespace AppointmentManagementSystem.WebApp.Controllers
             return Ok(result);
         }
 
-        [HttpPost("register")]
-        public async Task<ActionResult<int>> Register(RegisterRequest request)
+        [Authorize] 
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
         {
-            var command = new CreateUserCommand
-            {
-              //  Username = request.Email,
-                Email = request.Email,
-                Password = request.Password
-            };
+           
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+             
+            
+            Response.Headers["Cache-Control"] = "no-cache, no-store";
+            Response.Headers["Pragma"] = "no-cache";
+             
 
-            return Ok(await Mediator.Send(command));
+            return RedirectToAction("Index", "Home");
+        }
+
+       
+        [HttpGet("access-denied")]
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }
