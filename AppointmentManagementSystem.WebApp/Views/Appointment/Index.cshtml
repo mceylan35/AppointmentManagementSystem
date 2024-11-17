@@ -1,15 +1,26 @@
 ﻿@{
-    ViewData["Title"] = "Randevularım";
+   
+    ViewData["Title"] = User.IsInRole("Admin") ? "Randevu Yönetimi" : "Randevularım";
+    var isAdmin = User.IsInRole("Admin");
+ 
 }
 <div class="container">
-    <h2>Randevularım</h2>
-    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#createAppointmentModal">
-        Yeni Randevu
-    </button>
+    <h2>@ViewData["Title"]</h2>
+    @if (!isAdmin)
+    { 
+        <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#createAppointmentModal">
+            Yeni Randevu
+        </button>
+    }
+    
     <table id="appointmentsTable" class="table">
         <thead>
             <tr>
                 <th>Tarih</th>
+                 @if(isAdmin)
+                 {
+                      <th>Kullanıcı Adı</th>
+                 }
                 <th>Hizmet</th>
                 <th>Durum</th>
                 <th>İşlemler</th>
@@ -20,10 +31,14 @@
     </table>
 </div>
 
-@await Html.PartialAsync("_CreateAppointmentModal")
+ @await Html.PartialAsync("_CreateAppointmentModal")
+
 @await Html.PartialAsync("_EditAppointmentModal")
 
 @section Scripts {
+    <script>
+        const isAdmin = @Json.Serialize(User.IsInRole("Admin"));
+    </script>
     <script src="~/js/appointment.js"></script>
      
 }

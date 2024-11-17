@@ -13,7 +13,7 @@ namespace AppointmentManagementSystem.Application.Features.Commands.Appointments
     {
         public Guid Id { get; set; }
         public DateTime AppointmentDate { get; set; }
-        public Guid ServiceId { get; set; }
+        public Guid? ServiceId { get; set; }
         public string? Notes { get; set; }
         public AppointmentStatus Status { get; set; }
     }

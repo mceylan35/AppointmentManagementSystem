@@ -37,18 +37,19 @@ namespace AppointmentManagementSystem.Application.Features.Commands.Appointments
             {
                 throw new UnauthorizedAccessException("Bu randevuyu güncelleme yetkiniz yok.");
             }
-
-            entity.AppointmentDate = request.AppointmentDate;
-            entity.ServiceId = request.ServiceId;
-            entity.Notes = request.Notes;
-
-            // Sadece admin statü güncelleyebilir
             if (_currentUser.IsAdmin)
             {
+                // Sadece admin statü güncelleyebilir
                 entity.Status = request.Status;
             }
-
-           var result= await _context.SaveChangesAsync(cancellationToken);
+            else
+            {
+                entity.AppointmentDate = request.AppointmentDate;
+                entity.ServiceId = request.ServiceId.Value;
+                entity.Notes = request.Notes;
+                
+            } 
+            var result= await _context.SaveChangesAsync(cancellationToken);
 
             return ResultDto<bool>.Success(true, "Radevu başarıyla güncellendi.");
         }

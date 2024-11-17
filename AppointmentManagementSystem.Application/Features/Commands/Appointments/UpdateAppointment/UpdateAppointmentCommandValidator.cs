@@ -16,12 +16,9 @@ namespace AppointmentManagementSystem.Application.Features.Commands.Appointments
         public UpdateAppointmentCommandValidator(IApplicationDbContext context)
         {
             _context = context;
-
-            RuleFor(v => v.AppointmentDate)
-                .NotEmpty().WithMessage("Randevu tarihi zorunludur.")
-                .GreaterThan(DateTime.Now).WithMessage("Randevu tarihi bugünden sonra olmalıdır.");
-
-            RuleFor(v => v.ServiceId)
+            
+               
+            RuleFor(v => v.ServiceId.Value)
                 .NotEmpty().WithMessage("Hizmet seçimi zorunludur.")
                 .MustAsync(BeValidService).WithMessage("Geçersiz hizmet seçimi.");
 

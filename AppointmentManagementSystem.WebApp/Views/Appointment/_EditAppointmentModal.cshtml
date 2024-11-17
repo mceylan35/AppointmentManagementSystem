@@ -2,31 +2,63 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editAppointmentModalLabel">Randevu Düzenle</h5>
+                <h5 class="modal-title" id="editAppointmentModalLabel">
+                    @(User.IsInRole("Admin") ? "Randevu Durumu Güncelle" : "Randevu Düzenle")
+                </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="editAppointmentForm">
                     <input type="hidden" id="editAppointmentId" />
-                    <div class="form-group mb-3">
-                        <label for="editServiceId" class="form-label">Hizmet</label>
-                        <select class="form-select" id="editServiceId" name="serviceId" required>
-                            <option value="">Hizmet Seçiniz</option>
-                        </select>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="editAppointmentDate" class="form-label">Randevu Tarihi</label>
-                        <input type="datetime-local" class="form-control" id="editAppointmentDate" name="appointmentDate" required>
-                    </div>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <div class="form-group mb-3">
+                            <label class="form-label">Müşteri Bilgisi</label>
+                            <input type="text" class="form-control" id="editCustomerInfo" disabled>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label">Hizmet</label>
+                            <input type="text" class="form-control" id="editServiceInfo" disabled>
+                            <input type="hidden" id="editServiceId" disabled>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label">Randevu Tarihi</label>
+                            <input type="text" class="form-control" id="editDateInfo" disabled>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="editStatus" class="form-label">Durum</label>
+                            <select class="form-select" id="editStatus" name="status" required>
+                                <option value="0">Beklemede</option>
+                                <option value="1">Onaylandı</option>
+                                <option value="2">İptal Edildi</option>
+                                <option value="3">Tamamlandı</option>
+                            </select>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="form-group mb-3">
+                            <label for="editServiceId" class="form-label">Hizmet</label>
+                            <select class="form-select" id="editServiceId" name="serviceId" required>
+                                <option value="">Hizmet Seçiniz</option>
+                            </select>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="editAppointmentDate" class="form-label">Randevu Tarihi</label>
+                            <input type="datetime-local" class="form-control" id="editAppointmentDate" name="appointmentDate" required>
+                        </div>
+                    }
                     <div class="form-group mb-3">
                         <label for="editNotes" class="form-label">Notlar</label>
-                        <textarea class="form-control" id="editNotes" name="notes" rows="3"></textarea>
+                        <textarea class="form-control" id="editNotes" name="notes" rows="3" @(User.IsInRole("Admin") ? "readonly" : "")></textarea>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
-                <button type="button" class="btn btn-primary" id="updateAppointment">Güncelle</button>
+                <button type="button" class="btn btn-primary" id="updateAppointment">
+                    @(User.IsInRole("Admin") ? "Durumu Güncelle" : "Güncelle")
+                </button>
             </div>
         </div>
     </div>

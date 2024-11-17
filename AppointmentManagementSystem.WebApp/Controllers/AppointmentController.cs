@@ -32,6 +32,7 @@ namespace AppointmentManagementSystem.WebApp.Controllers
             return Ok(await Mediator.Send(new GetAppointmentDetailQuery { Id = id }));
         }
 
+        [Authorize(Roles = "User")]
         [HttpPost("create")]
         public async Task<ActionResult<int>> Create([FromBody]CreateAppointmentCommand command)
         {
@@ -45,6 +46,7 @@ namespace AppointmentManagementSystem.WebApp.Controllers
             return Ok(await Mediator.Send(command));
         }
 
+        [Authorize(Roles = "User")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(Guid id)
         {

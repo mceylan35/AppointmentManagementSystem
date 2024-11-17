@@ -92,13 +92,22 @@ $(document).ready(function () {
             url: `/Appointment/${appointmentId}`,
             type: 'GET',
             success: function (response) {
-                // Form alanlarýný doldur
-                $('#editAppointmentId').val(response.data.id);
-                $('#editServiceId').val(response.data.serviceId);
-                $('#editAppointmentDate').val(response.data.appointmentDate.slice(0, 16)); // datetime-local için format
-                $('#editNotes').val(response.data.notes);
+                const appointment = response.data;
+                $('#editAppointmentId').val(appointment.id);
 
-                // Modalý aç
+              
+                    $('#editCustomerInfo').val(`${appointment.userName}`);
+                    $('#editServiceInfo').val(appointment.serviceName);
+                    $('#editServiceId').val(appointment.serviceId); // ServiceId'yi sakla
+                    $('#editDateInfo').val(formatDate(appointment.appointmentDate));
+                  $('#editStatus').val(getStatusTextToInt(appointment.status));
+                    
+                   
+                $('#editAppointmentDate').val(appointment.appointmentDate);
+               
+               
+                $('#editNotes').val(appointment.notes);
+
                 editAppointmentModal.show();
             },
             error: function () {
@@ -115,13 +124,15 @@ $(document).ready(function () {
             form[0].reportValidity();
             return;
         }
-
+        const statusValue = $('#editStatus').val();
         const data = {
             id: $('#editAppointmentId').val(),
             serviceId: $('#editServiceId').val(),
             appointmentDate: $('#editAppointmentDate').val(),
-            notes: $('#editNotes').val()
-        };
+            notes: $('#editNotes').val(), 
+            status: Number.isNaN(Number.parseInt(statusValue)) ? 0 : Number.parseInt(statusValue) 
+        }; 
+
         const id = $('#editAppointmentId').val();
         $.ajax({
             url: `/appointment/${id}`,
@@ -135,7 +146,7 @@ $(document).ready(function () {
                     loadAppointments();
                     toastr.success(response.message);
                 } else {
-                    toastr.error(response.message || 'Randevu güncellenirken bir hata oluþtu.');
+                    toastr.error(response.message);
                 }
             },
             error: function (xhr) {
@@ -194,22 +205,74 @@ $(document).ready(function () {
                 tbody.empty();
 
                 response.data.forEach(function (appointment) {
-                    tbody.append(`
-                        <tr>
-                            <td>${formatDate(appointment.appointmentDate)}</td>
-                            <td>${appointment.serviceName}</td>
-                            <td>${appointment.status}</td>
-                            <td>
-                                <button class="btn btn-sm btn-primary edit-appointment" 
-                                        data-id="${appointment.id}">Düzenle</button>
-                                <button class="btn btn-sm btn-danger delete-appointment" 
-                                        data-id="${appointment.id}">Ýptal</button>
-                            </td>
-                        </tr>
-                    `);
+                    let row = `
+                    <tr>
+                        <td>${formatDate(appointment.appointmentDate)}</td>
+                        ${isAdmin ? `<td>${appointment.userName}</td>` : ''}
+                        <td>${appointment.serviceName}</td>
+                        <td>
+                            <span class="badge ${getStatusBadgeClass(appointment.status)}">
+                                ${getStatusText(appointment.status)}
+                            </span>
+                        </td>
+                      
+                        <td>${getActionButtons(appointment)}</td>
+                    </tr>
+                `;
+                    tbody.append(row);
                 });
             }
         });
+    }
+
+
+    function getActionButtons(appointment) {
+        if (isAdmin) {
+            return `
+            <button class="btn btn-sm btn-primary edit-appointment" data-id="${appointment.id}">
+                Durum Güncelle
+            </button>`;
+        } else {
+            // Sadece Pending durumundaki randevular için düzenleme ve iptal
+            if (appointment.status !== 0) { // Pending
+                return `
+                <button class="btn btn-sm btn-primary edit-appointment" data-id="${appointment.id}">
+                    Düzenle
+                </button>
+                <button class="btn btn-sm btn-danger delete-appointment" data-id="${appointment.id}">
+                    Ýptal
+                </button>`;
+            } 
+        }
+    }
+
+    function getStatusTextToInt(status) {
+        switch (status) {
+            case 'Pending': return 0;
+            case 'Confirmed': return 1;
+            case 'Cancelled': return 2;
+            case 'Completed': return 3;
+            default: return 0;
+        }
+    }
+    function getStatusText(status) {
+        switch (status) {
+            case 'Pending': return 'Beklemede';
+            case 'Confirmed': return 'Onaylandi';
+            case 'Cancelled': return 'Iptal Edildi';
+            case 'Completed': return 'Tamamlandi';
+            default: return 'Bilinmiyor';
+        }
+    }
+
+    function getStatusBadgeClass(status) {
+        switch (status) {
+            case 'Pending': return 'bg-warning';   
+            case 'Confirmed': return 'bg-success';   
+            case 'Cancelled': return 'bg-danger';    
+            case 'Completed': return 'bg-info';      
+            default: return 'bg-secondary';
+        }
     }
 
 
