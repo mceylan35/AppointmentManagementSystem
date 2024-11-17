@@ -232,12 +232,11 @@ $(document).ready(function () {
             <button class="btn btn-sm btn-primary edit-appointment" data-id="${appointment.id}">
                 Durum Guncelle
             </button>`;
-        } else {
-            // Sadece Pending durumundaki randevular için düzenleme ve iptal
-            if (appointment.status !== 0) { // Pending
+        } else { 
+            if (appointment.status !== 0) {  
                 return `
                 <button class="btn btn-sm btn-primary edit-appointment" data-id="${appointment.id}">
-                    Düzenle
+                    Duzenle
                 </button>
                 <button class="btn btn-sm btn-danger delete-appointment" data-id="${appointment.id}">
                     Sil

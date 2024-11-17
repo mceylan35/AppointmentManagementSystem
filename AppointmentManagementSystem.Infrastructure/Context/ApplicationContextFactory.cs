@@ -21,24 +21,12 @@ namespace AppointmentManagementSystem.Infrastructure.Context
     public class ApplicationContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
     {
         public ApplicationDbContext CreateDbContext(string[] args)
-        {
-
-
+        { 
             DbContextOptionsBuilder<ApplicationDbContext> dbContextOptionsBuilder = new();
             dbContextOptionsBuilder.UseSqlServer("Server=DESKTOP-PM650FE\\SQLEXPRESS;Integrated Security=true;Database=AppointmentManagementDB;TrustServerCertificate=True;");
             
             return new(dbContextOptionsBuilder.Options, new DesignTimeCurrentUserService());
-
-
-            //IConfigurationRoot configuration = new ConfigurationBuilder()
-            //    .SetBasePath(Directory.GetCurrentDirectory())
-            //    .AddJsonFile("appsettings.json")
-            //    .Build();
-
-   
-
-          
- 
+             
         }
     }
     

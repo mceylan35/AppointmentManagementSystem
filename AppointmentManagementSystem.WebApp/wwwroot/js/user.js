@@ -31,7 +31,7 @@
                             <td>${user.isActive ? 'Aktif' : 'Pasif'}</td>                          
                             <td>
                                 <button class="btn btn-sm btn-primary edit-user" data-id="${user.id}">
-                                    Düzenle
+                                    Duzenle
                                 </button>
                                 <button class="btn btn-sm btn-danger delete-user" data-id="${user.id}">
                                     Sil
