@@ -19,7 +19,11 @@ $(document).ready(function () {
             success: function (response) {
                 $('#createAppointmentModal').modal('hide');
                 loadAppointments();
-                toastr.success('Randevu baþarýyla oluþturuldu.');
+                if (response.successed)
+                    toastr.success(response.message);
+                else {
+                    toastr.error(response.message);
+                }
             },
             error: function (xhr) {
                 toastr.error('Randevu oluþturulurken bir hata oluþtu.');
@@ -57,10 +61,12 @@ $(document).ready(function () {
             data: JSON.stringify(data),
             success: function (response) {
                 if (response.success) {
-                    appointmentModal.hide(); // Bootstrap 5 modal kapatma
+                    appointmentModal.hide();  
                     form[0].reset();
                     loadAppointments();
-                    toastr.success('Randevu baþarýyla oluþturuldu.');
+                  
+                   toastr.success(response.message);
+                    
                 } else {
                     toastr.error(response.message || 'Randevu oluþturulurken bir hata oluþtu.');
                 }
@@ -85,12 +91,12 @@ $(document).ready(function () {
         $.ajax({
             url: `/Appointment/${appointmentId}`,
             type: 'GET',
-            success: function (appointment) {
+            success: function (response) {
                 // Form alanlarýný doldur
-                $('#editAppointmentId').val(appointment.id);
-                $('#editServiceId').val(appointment.serviceId);
-                $('#editAppointmentDate').val(appointment.appointmentDate.slice(0, 16)); // datetime-local için format
-                $('#editNotes').val(appointment.notes);
+                $('#editAppointmentId').val(response.data.id);
+                $('#editServiceId').val(response.data.serviceId);
+                $('#editAppointmentDate').val(response.data.appointmentDate.slice(0, 16)); // datetime-local için format
+                $('#editNotes').val(response.data.notes);
 
                 // Modalý aç
                 editAppointmentModal.show();
@@ -123,11 +129,11 @@ $(document).ready(function () {
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (response) {
-                if (response.success) {
+                if (response.successed) {
                     editAppointmentModal.hide();
                     form[0].reset();
                     loadAppointments();
-                    toastr.success('Randevu baþarýyla güncellendi.');
+                    toastr.success(response.message);
                 } else {
                     toastr.error(response.message || 'Randevu güncellenirken bir hata oluþtu.');
                 }
@@ -151,8 +157,8 @@ $(document).ready(function () {
 
                     services.forEach(function (service) {
                         select.append(`<option value="${service.id}" 
-                        data-duration="${service.duration}">
-                        ${service.name} (${service.duration} dk)
+                         >
+                        ${service.name}  
                     </option>`);
                     });
                 },
@@ -183,11 +189,11 @@ $(document).ready(function () {
         $.ajax({
             url: '/Appointment/appointments',
             type: 'GET',
-            success: function (appointments) {
+            success: function (response) {
                 const tbody = $('#appointmentsTable tbody');
                 tbody.empty();
 
-                appointments.forEach(function (appointment) {
+                response.data.forEach(function (appointment) {
                     tbody.append(`
                         <tr>
                             <td>${formatDate(appointment.appointmentDate)}</td>

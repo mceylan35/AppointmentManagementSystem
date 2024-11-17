@@ -9,11 +9,20 @@
         $.ajax({
             url: '/users/getusers',
             type: 'GET',
-            success: function (users) {
+            success: function (response) {
                 const tbody = $('#usersTable tbody');
                 tbody.empty();
-
-                users.forEach(function (user) {
+                if (!response.data || response.data.length === 0) {
+                    tbody.append(`
+                    <tr>
+                        <td colspan="4" class="text-center">
+                            <p class="text-muted my-3">Kullanıcı bulunamadı</p>
+                        </td>
+                    </tr>
+                `);
+                    return;
+                }
+                response.data.forEach(function (user) {
                     tbody.append(`
                         <tr>
                             <td>${user.username}</td>
@@ -31,7 +40,24 @@
                         </tr>
                     `);
                 });
-            }
+            },
+             
+            error: function (xhr) {
+                const tbody = $('#usersTable tbody');
+                tbody.empty();
+                tbody.append(`
+                <tr>
+                    <td colspan="4" class="text-center">
+                        <p class="text-danger my-3">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Kullanıcılar yüklenirken bir hata oluştu
+                        </p>
+                    </td>
+                </tr>
+            `);
+                toastr.error('Kullanıcılar yüklenirken bir hata oluştu: ' + (xhr.responseJSON?.message || 'Bilinmeyen hata'));
+            } 
+
         });
     }
 
