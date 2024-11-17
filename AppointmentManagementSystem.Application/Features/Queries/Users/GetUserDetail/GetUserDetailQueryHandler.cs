@@ -38,8 +38,8 @@ namespace AppointmentManagementSystem.Application.Features.Queries.Users.GetUser
                 Username = user.Username,
                 Email = user.Email,
                 IsActive = user.IsActive,
-                RoleIds = user.UserRoles.Select(ur => ur.RoleId).ToList(),
-                RoleNames = user.UserRoles.Select(ur => ur.Role.Name).ToList()
+                RoleId = user.UserRoles.Select(ur => ur.RoleId).FirstOrDefault(),
+                RoleName = user.UserRoles.Select(ur => ur.Role.Name).FirstOrDefault()
             };
             return ResultDto<UserDetailDto>.Success(response,"İşlem Başarılı");
         }

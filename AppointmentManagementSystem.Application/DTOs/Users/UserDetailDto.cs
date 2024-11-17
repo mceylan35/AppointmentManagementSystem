@@ -12,7 +12,7 @@ namespace AppointmentManagementSystem.Application.DTOs.Users
         public string Username { get; set; }
         public string Email { get; set; }
         public bool IsActive { get; set; }
-        public List<Guid> RoleIds { get; set; }
-        public List<string> RoleNames { get; set; }
+        public Guid RoleId { get; set; }
+        public string RoleName { get; set; }
     }
 }

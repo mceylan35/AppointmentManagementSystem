@@ -126,7 +126,7 @@
                 $('#editUserId').val(user.id);
                 $('#editUsername').val(user.username);
                 $('#editEmail').val(user.email);
-                $('#editRoles').val(user.roleIds);
+                $('#editRoles').val(user.roleId);
                 $('#editIsActive').prop('checked', user.isActive);
 
                 editUserModal.show();
