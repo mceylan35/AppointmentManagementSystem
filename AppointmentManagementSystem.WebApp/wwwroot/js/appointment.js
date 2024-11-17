@@ -230,7 +230,7 @@ $(document).ready(function () {
         if (isAdmin) {
             return `
             <button class="btn btn-sm btn-primary edit-appointment" data-id="${appointment.id}">
-                Durum Güncelle
+                Durum Guncelle
             </button>`;
         } else {
             // Sadece Pending durumundaki randevular için düzenleme ve iptal
